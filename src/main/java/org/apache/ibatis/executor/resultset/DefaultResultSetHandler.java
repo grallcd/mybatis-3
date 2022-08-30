@@ -5,7 +5,7 @@
  *    you may not use this file except in compliance with the License.
  *    You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *       https://www.apache.org/licenses/LICENSE-2.0
  *
  *    Unless required by applicable law or agreed to in writing, software
  *    distributed under the License is distributed on an "AS IS" BASIS,
@@ -710,12 +710,14 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     if (constructors.length == 1) {
       return Optional.of(constructors[0]);
     }
-    for (final Constructor<?> constructor : constructors) {
-      if (constructor.isAnnotationPresent(AutomapConstructor.class)) {
-        return Optional.of(constructor);
-      }
-    }
-    if (configuration.isArgNameBasedConstructorAutoMapping()) {
+    Optional<Constructor<?>> annotated = Arrays.stream(constructors)
+        .filter(x -> x.isAnnotationPresent(AutomapConstructor.class))
+        .reduce((x, y) -> {
+          throw new ExecutorException("@AutomapConstructor should be used in only one constructor.");
+        });
+    if (annotated.isPresent()) {
+      return annotated;
+    } else if (configuration.isArgNameBasedConstructorAutoMapping()) {
       // Finding-best-match type implementation is possible,
       // but using @AutomapConstructor seems sufficient.
       throw new ExecutorException(MessageFormat.format(
@@ -748,7 +750,9 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       foundValues = applyColumnOrderBasedConstructorAutomapping(rsw, constructorArgTypes, constructorArgs, constructor,
           foundValues);
     }
-    return foundValues ? objectFactory.create(resultType, constructorArgTypes, constructorArgs) : null;
+    return foundValues || configuration.isReturnInstanceForEmptyRow()
+        ? objectFactory.create(resultType, constructorArgTypes, constructorArgs)
+        : null;
   }
 
   private boolean applyColumnOrderBasedConstructorAutomapping(ResultSetWrapper rsw, List<Class<?>> constructorArgTypes,
