@@ -17,7 +17,7 @@
 
 -->
 <document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 https://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
     <title>MyBatis 3 | Introduction</title>
@@ -39,6 +39,8 @@
           configuration and map primitives, Map interfaces and
           Java POJOs
           (Plain Old Java Objects) to database records.
+        </p>
+        <p>If you are completely new to database access in Java,<a href="https://www.marcobehler.com/guides/a-guide-to-accessing-databases-in-java">https://www.marcobehler.com/guides/a-guide-to-accessing-databases-in-java</a> contains a good overview of the various parts, pieces and options and shows you where exactly MyBatis fits in.
         </p>
       </subsection>
 

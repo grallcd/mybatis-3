@@ -1,5 +1,5 @@
 /*
- *    Copyright 2009-2022 the original author or authors.
+ *    Copyright 2009-2023 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,15 +32,23 @@ public interface RecordTypeMapper {
   @Select("select val, id, url from prop where id = #{id}")
   Property selectProperty(int id);
 
+  @Arg(name = "id", column = "id", id = true)
+  @Arg(name = "value", column = "val")
+  @Arg(name = "URL", column = "url")
+  @Select("select val, id, url from prop where id = #{id}")
+  Property selectPropertyNoJavaType(int id);
+
   @Insert("insert into prop (id, val, url) values (#{id}, #{value}, #{URL})")
   int insertProperty(Property property);
 
   @Arg(id = true, column = "id", javaType = Integer.class)
   @Arg(javaType = Property.class, resultMap = "propertyRM", columnPrefix = "p_")
+  // @formatter:off
   @Select({
-    "select i.id, p.id p_id, p.val p_val, p.url p_url",
-    "from item i left join prop p on p.id = i.prop_id",
-    "where i.id = #{id}" })
+      "select i.id, p.id p_id, p.val p_val, p.url p_url",
+      "from item i left join prop p on p.id = i.prop_id",
+      "where i.id = #{id}"})
+  // @formatter:on
   Item selectItem(Integer id);
 
 }
